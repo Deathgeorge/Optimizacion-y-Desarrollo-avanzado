@@ -19,3 +19,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:secreto_super_seguro_para_jwt_123_con_valor_por_defecto}
+
+
+socketio:
+  port: 8095
+  host: 0.0.0.0
