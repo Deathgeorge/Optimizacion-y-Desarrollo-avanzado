@@ -1,5 +1,7 @@
 package com.ecohome.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcType;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
@@ -33,6 +36,7 @@ public class User {
     private String name;
 
     @Column(nullable = false, length = 255)
+    @JsonIgnore
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)

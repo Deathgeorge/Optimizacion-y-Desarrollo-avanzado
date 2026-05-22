@@ -37,6 +37,7 @@ public class LoginController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
 
+        System.out.println(generarPswd(loginRequest.getPassword()));
         if (userOpt.isEmpty()) {
             System.out.println("❌ Login fallido: No se encontró usuario con documento " + loginRequest.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Usuario no encontrado"));

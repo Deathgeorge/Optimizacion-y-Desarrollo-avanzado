@@ -64,6 +64,7 @@ this.server = server;
                 // Extraemos el userId del token y lo guardamos en la sesión del socket
                 Long userId = decodedJWT.getClaim("userId").asLong();
                 client.set("userId", userId);
+                System.out.println("Cliente" + userId + "conectado");
             } catch (Exception e) {
                 System.out.println("❌ Conexión de socket rechazada: Token inválido - " + e.getMessage());
                 client.disconnect();

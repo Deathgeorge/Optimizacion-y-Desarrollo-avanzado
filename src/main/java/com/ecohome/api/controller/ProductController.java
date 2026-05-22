@@ -5,13 +5,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecohome.api.dto.ProductRequest;
 import com.ecohome.api.model.Product;
 import com.ecohome.api.model.ProductStatus;
+import com.ecohome.api.model.User;
 import com.ecohome.api.repository.ProductRepository;
+import com.ecohome.api.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,10 +33,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ProductController {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     
     @GetMapping("/v1/products")
     public ResponseEntity<List<Product>> getProducts() {
-        
+        System.out.println("respuesta" +productRepository.findAll().get(0).getCreatedBy().getName());
         return ResponseEntity.ok(productRepository.findAll());
     }
 
@@ -49,7 +54,14 @@ public class ProductController {
         newProduct.setStatus(ProductStatus.available);
         newProduct.setPrice(product.getPrice());
         newProduct.setStockQuantity(product.getStockQuantity());
-        newProduct.setCreatedAt(java.time.LocalDateTime.now());
+        newProduct.setCreatedAt(java.time.LocalDateTime.now()); 
+        
+        // Obtener el principal (documentNumber) del token desde el SecurityContext
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String documentNumber = auth.getName(); 
+        User currentUser = userRepository.findByDocumentNumber(documentNumber)
+                .orElseThrow(() -> new RuntimeException("Usuario autenticado no encontrado"));
+        newProduct.setCreatedBy(currentUser);
 
         return ResponseEntity.ok(productRepository.save(newProduct));
     }
